@@ -4,10 +4,10 @@ const CREATE_TASK = 'CREATE_TASK'
 const RESET_TASK_LIST = 'RESET_TASK_LIST'
 const DELETE_TASK = 'DELETE_TASK'
 
-const createTask = () => {
+const createTask = (task) => {
     return {
         type: CREATE_TASK,
-        taskMessage: 'walk dog'
+        taskMessage: task
     }
 }
 
@@ -18,9 +18,10 @@ const resetTaskList = () => {
     }
 }
 
-const deleteTask = () => {
+const deleteTask = (id) => {
     return {
         type: DELETE_TASK,
+        taskId: id
     }
 }
 
@@ -30,14 +31,17 @@ const tasksReducer = (state = [], action) => {
             const newTask = {
                 message: action.taskMessage,
             }
-            return [...state, newTask]
+            return [...state, newTask];
         case RESET_TASK_LIST:
-            return
+            return action.emptyTaskList;
         case DELETE_TASK:
-            return
+            const idx = action.taskId;
+            return [...state.slice(0, idx), ...state.slice(idx+1)];
         default:
             return state;
     }
 }
 
 const store = createStore(tasksReducer);
+
+module.exports = {store, createTask, deleteTask, resetTaskList};
